@@ -57,6 +57,7 @@ class _LoginViewState extends State<LoginView> {
           key: 'password',
           value: password,
         );
+        Navigator.of(loginButtonContext).pushNamedAndRemoveUntil('/home', (route) => false);
       } else if(response.statusCode == 400){
           ScaffoldMessenger.of(loginButtonContext).showSnackBar(
           const SnackBar(
