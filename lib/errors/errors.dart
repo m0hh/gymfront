@@ -1,0 +1,1 @@
+class UnAuthenticatedError implements Exception {}
