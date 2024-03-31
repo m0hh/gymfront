@@ -1,5 +1,6 @@
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gymfront/util/show_error_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:gymfront/conf.dart';
 import 'dart:convert';
@@ -62,49 +63,20 @@ class _RegisterViewState extends State<RegisterView> {
           value: password,
         );
       } else if(response.statusCode == 400){
-          ScaffoldMessenger.of(registerButtonContext).showSnackBar(
-          const SnackBar(
-            content: Text("Oops! Something went wrong. Please try again."),
-          ),
-        );
+        showErrorDialog(registerButtonContext, "Oops! Something went wrong. Please try again.");
+
       
       } else if (response.statusCode == 422){
       
           final errors = jsonDecode(response.body) as Map<String, dynamic>;
           // Display specific errors from the server
-          showDialog(
-            context: registerButtonContext,
-            builder: (context) => AlertDialog(
-              title: const Text("Registration Error"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: errors.entries.map((error) {
-                    return Text("${error.key}: ${error.value}");
-                  }).toList(),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const  Text("OK"),
-                ),
-              ],
-            ),
-          );
+          showErrorsDialog(registerButtonContext, errors);
       }else {
-          ScaffoldMessenger.of(registerButtonContext).showSnackBar(
-          const SnackBar(
-            content: Text("Oops! Something went wrong. Please try again."),
-          ),
-        );
+        showErrorDialog(registerButtonContext, "Oops! Something went wrong. Please try again.");
       
       }
     } on Exception catch (e) {
-            ScaffoldMessenger.of(registerButtonContext).showSnackBar(
-              const SnackBar(
-                content: Text("Oops! Something went wrong. Please try again."),
-              ),
-            );
+        showErrorDialog(registerButtonContext, "Oops! Something went wrong. Please try again.");
     }
 
 

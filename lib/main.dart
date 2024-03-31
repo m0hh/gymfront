@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gymfront/auth/service.dart';
+import 'package:gymfront/constants/routes.dart';
 import 'package:gymfront/views/list_coach_users_view.dart';
 import 'package:gymfront/views/login_view.dart';
 import 'package:gymfront/views/register_view.dart';
@@ -20,10 +21,10 @@ void main() async{
       ),
       home: isLoggedIn ? const HomePage() : const  LoginView(),
       routes: {
-        "/login": (context) => const LoginView(),
-        "/register": (context) => const RegisterView(),
-        "/home": (context) => const HomePage(),
-        "/coach_users":(context) => const ListCoachUsers()
+        loginRoute: (context) => const LoginView(),
+        registerRoute: (context) => const RegisterView(),
+        homeRoute: (context) => const HomePage(),
+        coachUsersRoute:(context) => const ListCoachUsers()
       },
     ));
 }
@@ -55,7 +56,6 @@ class HomePage extends StatelessWidget {
               
               case MenuAction.logout:
                 final shouldLogout = await showlogoutDialogf(context);
-                print(shouldLogout);
                 if (shouldLogout){
                   await _logout(context);
                 }
@@ -84,7 +84,7 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 // Navigate to Location 1
                 Navigator.pop(context); // Close the drawer
-                Navigator.pushNamed(context, '/coach_users');
+                Navigator.pushNamed(context, coachUsersRoute);
               },
             ),
             // Add more ListTiles for other locations

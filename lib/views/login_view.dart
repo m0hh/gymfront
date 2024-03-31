@@ -1,6 +1,10 @@
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gymfront/constants/routes.dart';
+import 'package:gymfront/util/show_error_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:gymfront/conf.dart';
 import 'dart:convert';
@@ -57,44 +61,20 @@ class _LoginViewState extends State<LoginView> {
           key: 'password',
           value: password,
         );
-        Navigator.of(loginButtonContext).pushNamedAndRemoveUntil('/home', (route) => false);
+        Navigator.of(loginButtonContext).pushNamedAndRemoveUntil(homeRoute, (route) => false);
       } else if(response.statusCode == 400){
-          ScaffoldMessenger.of(loginButtonContext).showSnackBar(
-          const SnackBar(
-            content: Text("Oops! Something went wrong. Please try again."),
-          ),
-        );
+          showErrorDialog(loginButtonContext, "Oops! Something went wrong. Please try again.");
       
       }else if(response.statusCode == 401){
-          ScaffoldMessenger.of(loginButtonContext).showSnackBar(
-          const SnackBar(
-            content: Text("Wrong Crednetials"),
-          ),
-        );
+          showErrorDialog(loginButtonContext, "Wrong Credentials");
+
       
       }else if (response.statusCode == 422){
       
           final errors = jsonDecode(response.body) as Map<String, dynamic>;
+          showErrorsDialog(loginButtonContext, errors);
           // Display specific errors from the server
-          showDialog(
-            context: loginButtonContext,
-            builder: (context) => AlertDialog(
-              title: const Text("Registration Error"),
-              content: SingleChildScrollView(
-                child: ListBody(
-                  children: errors.entries.map((error) {
-                    return Text("${error.key}: ${error.value}");
-                  }).toList(),
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("OK"),
-                ),
-              ],
-            ),
-          );
+          
       }else {
           ScaffoldMessenger.of(loginButtonContext).showSnackBar(
           const SnackBar(
@@ -104,11 +84,7 @@ class _LoginViewState extends State<LoginView> {
       
       }
     } on Exception catch (e) {
-      ScaffoldMessenger.of(loginButtonContext).showSnackBar(
-          const SnackBar(
-            content: Text("Oops! Something went wrong. Please try again."),
-          ),
-        );
+      showErrorDialog(loginButtonContext, "Oops! Something went wrong. Please try again.");
     }
 
 
@@ -164,3 +140,4 @@ class _LoginViewState extends State<LoginView> {
     );
   }
 }
+
