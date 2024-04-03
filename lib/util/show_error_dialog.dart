@@ -1,7 +1,10 @@
 
 
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
+import 'package:gymfront/util/genericDialog.dart';
 
 void showErrorsDialog(BuildContext context,Map<String, dynamic>  errors){
   showDialog(
@@ -41,4 +44,25 @@ void showSuccessDialog(BuildContext context, message){
           duration: const Duration(seconds: 1),
         ),
       );
+}
+
+Future<void> showNewErrorDialog (BuildContext context, String text){
+  return showGenericDialog(context: context,
+   title: "An Error Has Ocurred",
+    content: text,
+     optionsBuilder: () =>{
+      'OK' : null,
+     });
+
+}
+
+
+Future<bool> showDeleteDialog(BuildContext context){
+  return showGenericDialog(context: context,
+   title: "Delete",
+    content: "Are you sure you want to delete",
+     optionsBuilder: () => {
+      'No' : false,
+      'Delete' : true
+     }).then((value) => value ?? false);
 }

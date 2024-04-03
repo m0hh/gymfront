@@ -57,11 +57,50 @@ class _ListFoodsState extends State<ListFoods> {
  
 
   }
+
+    Future<String> _deleteFood(int id) async {
+
+    final url = Uri.parse('$baseUrl/v1/meals/food/delete/$id');
+    final token = await _storage.read(key: "token");
+
+    try {
+
+      final response = await http.delete(
+        url,
+        headers: <String, String>{
+          'Authorization': 'Bearer $token',
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+      );
+      
+      if (response.statusCode == 204) {
+       return _getFoods();
+      }else if (response.statusCode == 403){
+        return "login";
+      }else if (response.statusCode == 401){
+        return "login";
+      }else if (response.statusCode == 409){
+        return "conflict";
+      }else {
+        return "error";
+      
+      }
+    } on Exception catch (e) {
+        return "error";
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Your foods"),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+            Navigator.pushNamedAndRemoveUntil(context, homeRoute, (route) => false);
+          } 
+        ),
         actions: [
            IconButton(
             onPressed: () =>{Navigator.pushNamed(context, addFoodRoute)},
@@ -92,6 +131,30 @@ class _ListFoodsState extends State<ListFoods> {
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,
                       ),
+                    trailing: IconButton(
+                      onPressed: () async{
+                        final shouldDelete = await showDeleteDialog(context);
+                        if (shouldDelete){
+                          final res = await _deleteFood(foods["id"]);
+                          switch (res){
+                            case "login":
+                              Navigator.pushNamedAndRemoveUntil(context, loginRoute, (route) => false);
+                              break;
+                            case "error":
+                              showErrorDialog(context, "An Error has occured");
+                              break;
+                            case "conflict":
+                            showErrorDialog(context,"Cannot delete this food because there is a meal that have it, delete the meal first");
+                            default:
+                              setState(() {});
+                              break;
+                          }
+
+                        }
+                      },
+                      icon: const Icon(Icons.delete),
+
+                    ),
                     
                   );
                 },

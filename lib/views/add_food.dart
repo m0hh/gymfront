@@ -6,6 +6,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gymfront/constants/routes.dart';
 import 'package:gymfront/util/menuBar.dart';
 import 'package:gymfront/util/show_error_dialog.dart';
+import 'package:gymfront/views/list_foods.dart';
 import 'package:http/http.dart' as http;
 import 'package:gymfront/conf.dart';
 import 'dart:convert';
@@ -46,15 +47,14 @@ class _AddFoodState extends State<AddFood> {
         }),
       );
 
-      print(response.statusCode);
-      print(response.body);
 
       
       if (response.statusCode == 201) {
 
         showSuccessDialog(registerButtonContext, "Created Succesfully Successfully");
         Future.delayed(const Duration(seconds: 1), () {
-        Navigator.of(registerButtonContext).pushNamedAndRemoveUntil(listFoodsRoute, (route) => false); 
+        Navigator.pop(context);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => ListFoods())); 
         });
       } else if (response.statusCode == 403){
         Navigator.of(registerButtonContext).pushNamedAndRemoveUntil(loginRoute, (route) => false);
