@@ -32,3 +32,13 @@ void showErrorDialog(BuildContext context,  error){
           ),
         );
 }
+
+void showSuccessDialog(BuildContext context, message){
+   final scaffold = ScaffoldMessenger.of(context);
+      scaffold.showSnackBar(
+        SnackBar(
+          content:  Text(message),
+          duration: const Duration(seconds: 1),
+        ),
+      );
+}

@@ -1,10 +1,14 @@
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:gymfront/constants/routes.dart';
+import 'package:gymfront/main.dart';
+import 'package:gymfront/util/menuBar.dart';
 import 'package:gymfront/util/show_error_dialog.dart';
 import 'package:http/http.dart' as http;
 import 'package:gymfront/conf.dart';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:gymfront/auth/service.dart';
 
 
 class RegisterView extends StatefulWidget {
@@ -25,12 +29,14 @@ class _RegisterViewState extends State<RegisterView> {
   Future<void> _registerUser(name, email, password, registerButtonContext) async {
 
     final url = Uri.parse('$baseUrl/v1/users');
+    final token = await _storage.read(key: "token");
 
     try {
+
       final response = await http.post(
         url,
         headers: <String, String>{
-          'Authorization': 'Bearer DE37Y2FPH3TB3PH3YPSTYX3YQ4',
+          'Authorization': 'Bearer $token',
           'Content-Type': 'application/json; charset=UTF-8',
         },
         body: json.encode(<String, String>{
@@ -41,35 +47,22 @@ class _RegisterViewState extends State<RegisterView> {
       );
       
       if (response.statusCode == 202) {
-        final data = jsonDecode(response.body);
-        await _storage.write(
-          key: 'token',
-          value: data['authentication_token']['token'],
-        );
-        await _storage.write(
-          key: 'expiry',
-          value: data['authentication_token']['expiry'].toString(),
-        );
-        await _storage.write(
-          key: 'role',
-          value: data['user']['role'],
-        );
-        await _storage.write(
-          key: 'email',
-          value: email,
-        );
-        await _storage.write(
-          key: 'password',
-          value: password,
-        );
+
+        showSuccessDialog(registerButtonContext, "Registered Successfully");
+        Future.delayed(const Duration(seconds: 1), () {
+        Navigator.of(registerButtonContext).pushNamedAndRemoveUntil(homeRoute, (route) => false); 
+        });
       } else if(response.statusCode == 400){
         showErrorDialog(registerButtonContext, "Oops! Something went wrong. Please try again.");
 
       
+      }else if (response.statusCode == 403){
+        Navigator.of(registerButtonContext).pushNamedAndRemoveUntil(loginRoute, (route) => false);
+      }else if (response.statusCode == 401){
+        Navigator.of(registerButtonContext).pushNamedAndRemoveUntil(loginRoute, (route) => false); 
       } else if (response.statusCode == 422){
       
           final errors = jsonDecode(response.body) as Map<String, dynamic>;
-          // Display specific errors from the server
           showErrorsDialog(registerButtonContext, errors);
       }else {
         showErrorDialog(registerButtonContext, "Oops! Something went wrong. Please try again.");
@@ -83,7 +76,7 @@ class _RegisterViewState extends State<RegisterView> {
   }
   
 @override
-  void initState() {
+  void initState(){
     _email = TextEditingController();
     _password = TextEditingController();
     _name = TextEditingController();
@@ -100,9 +93,11 @@ class _RegisterViewState extends State<RegisterView> {
   }
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Register'),
+        actions: [MenuActionsWidget(context: context)],
     ),
     body: Column(
       children: [

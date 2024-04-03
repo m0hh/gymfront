@@ -13,21 +13,21 @@ import 'package:gymfront/util/show_error_dialog.dart';
 import 'package:http/http.dart' as http;
 
 
-class ListCoachUsers extends StatefulWidget {
-  const ListCoachUsers({super.key});
+class ListFoods extends StatefulWidget {
+  const ListFoods({super.key});
 
   @override
-  State<ListCoachUsers> createState() => _ListCoachUsersState();
+  State<ListFoods> createState() => _ListFoodsState();
 }
 
-class _ListCoachUsersState extends State<ListCoachUsers> {
+class _ListFoodsState extends State<ListFoods> {
   final _storage = const FlutterSecureStorage();
 
 
 
-  Future<String> _getUsers() async {
+  Future<String> _getFoods() async {
 
-    final url = Uri.parse('$baseUrl/v1/users/coach/get');
+    final url = Uri.parse('$baseUrl/v1/meals/food/get');
     final token = await _storage.read(key: "token");
 
     try {
@@ -61,16 +61,16 @@ class _ListCoachUsersState extends State<ListCoachUsers> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Your users"),
+        title: const Text("Your foods"),
         actions: [
            IconButton(
-            onPressed: () =>{Navigator.pushNamed(context, registerRoute)},
+            onPressed: () =>{Navigator.pushNamed(context, addFoodRoute)},
             icon: const Icon(Icons.add)),
             MenuActionsWidget(context: context,),
             ]
         ),
       body: FutureBuilder(
-        future:_getUsers() ,
+        future:_getFoods() ,
         builder: (context, snapshot) {
           switch (snapshot.connectionState){
             case ConnectionState.done:
@@ -82,12 +82,12 @@ class _ListCoachUsersState extends State<ListCoachUsers> {
               }
               final data = jsonDecode(result) as Map<String, dynamic>;
               return ListView.builder(
-                itemCount: data["users"].length,
+                itemCount: data["foods"].length,
                 itemBuilder: (context, index) {
-                  final user = data["users"][index];
+                  final foods = data["foods"][index];
                   return ListTile(
                     title: Text(
-                      user["name"],
+                      foods["food_name"] + " Serving " + foods["serving"] ,
                       maxLines: 1,
                       softWrap: true,
                       overflow: TextOverflow.ellipsis,

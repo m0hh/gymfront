@@ -68,14 +68,7 @@ class AuthenticationService {
       throw UnAuthenticatedError(); // Custom error type
     }
 
-    final expiry = DateTime.parse(expiryString);
-    final now = DateTime.now();
-
-    // Check if token is expired (add buffer time for potential server delays)
-    var buffer = const Duration(minutes: 5);
-    if (expiry.isBefore(now.add(buffer))) {
-      await login(email, password);
-    }
+    await login(email, password);
   }
 
     Future<bool> isLoggedIn() async {

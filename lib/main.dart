@@ -4,7 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gymfront/auth/service.dart';
 import 'package:gymfront/constants/routes.dart';
+import 'package:gymfront/util/logout.dart';
+import 'package:gymfront/util/menuBar.dart';
+import 'package:gymfront/views/add_food.dart';
 import 'package:gymfront/views/list_coach_users_view.dart';
+import 'package:gymfront/views/list_foods.dart';
 import 'package:gymfront/views/login_view.dart';
 import 'package:gymfront/views/register_view.dart';
 import 'dart:developer' show log;
@@ -24,7 +28,9 @@ void main() async{
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         homeRoute: (context) => const HomePage(),
-        coachUsersRoute:(context) => const ListCoachUsers()
+        coachUsersRoute:(context) => const ListCoachUsers(),
+        addFoodRoute:(context) => const AddFood(),
+        listFoodsRoute:(context) => const ListFoods()
       },
     ));
 }
@@ -33,42 +39,13 @@ enum MenuAction { logout }
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  Future<void> _logout(context) async {
-  try {
-    final _storage = const FlutterSecureStorage();
-    await _storage.deleteAll();
-    Navigator.of(context).pushNamedAndRemoveUntil('/login', (_) => false);
-
-  } catch (error) {
-    // Handle any errors that may occur during logout
-    log(error.toString());
-  }
-}
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Home Page"),
-        actions: [
-          PopupMenuButton<MenuAction>(onSelected: (value) async {
-            switch(value){
-              
-              case MenuAction.logout:
-                final shouldLogout = await showlogoutDialogf(context);
-                if (shouldLogout){
-                  await _logout(context);
-                }
-                break;
-            }
-          },
-          itemBuilder: (context) {
-            return const [
-             PopupMenuItem<MenuAction>(value:MenuAction.logout , child: Text("Logout")),
-            ];
-          },
-          )
-        ],
+        actions: [MenuActionsWidget(context: context,)],
         ),
       drawer: Drawer(
         child: ListView(
@@ -85,6 +62,22 @@ class HomePage extends StatelessWidget {
                 // Navigate to Location 1
                 Navigator.pop(context); // Close the drawer
                 Navigator.pushNamed(context, coachUsersRoute);
+              },
+            ),
+            ListTile(
+              title: const Text('Register a  User'),
+              onTap: () {
+                // Navigate to Location 1
+                Navigator.pop(context); // Close the drawer
+                Navigator.pushNamed(context, registerRoute);
+              },
+            ),
+            ListTile(
+              title: const Text('Foods'),
+              onTap: () {
+                // Navigate to Location 1
+                Navigator.pop(context); // Close the drawer
+                Navigator.pushNamed(context, listFoodsRoute);
               },
             ),
             // Add more ListTiles for other locations
