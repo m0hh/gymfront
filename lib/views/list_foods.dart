@@ -6,8 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gymfront/conf.dart';
 import 'package:gymfront/constants/routes.dart';
-import 'package:gymfront/main.dart';
-import 'package:gymfront/util/logout.dart';
 import 'package:gymfront/util/menuBar.dart';
 import 'package:gymfront/util/show_error_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -103,7 +101,7 @@ class _ListFoodsState extends State<ListFoods> {
         ),
         actions: [
            IconButton(
-            onPressed: () =>{Navigator.pushNamed(context, addFoodRoute)},
+            onPressed: () =>{Navigator.pushNamed(context, addUpdateFoodRoute)},
             icon: const Icon(Icons.add)),
             MenuActionsWidget(context: context,),
             ]
@@ -125,6 +123,9 @@ class _ListFoodsState extends State<ListFoods> {
                 itemBuilder: (context, index) {
                   final foods = data["foods"][index];
                   return ListTile(
+                    onTap: () {
+                      Navigator.pushNamed(context, addUpdateFoodRoute, arguments:foods );
+                    },
                     title: Text(
                       foods["food_name"] + " Serving " + foods["serving"] ,
                       maxLines: 1,

@@ -1,12 +1,10 @@
 
 
 import 'package:flutter/material.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gymfront/auth/service.dart';
 import 'package:gymfront/constants/routes.dart';
-import 'package:gymfront/util/logout.dart';
 import 'package:gymfront/util/menuBar.dart';
-import 'package:gymfront/views/add_food.dart';
+import 'package:gymfront/views/add_update_food.dart';
 import 'package:gymfront/views/list_coach_users_view.dart';
 import 'package:gymfront/views/list_foods.dart';
 import 'package:gymfront/views/login_view.dart';
@@ -29,7 +27,7 @@ void main() async{
         registerRoute: (context) => const RegisterView(),
         homeRoute: (context) => const HomePage(),
         coachUsersRoute:(context) => const ListCoachUsers(),
-        addFoodRoute:(context) => const AddFood(),
+        addUpdateFoodRoute:(context) => const AddUpdateFood(),
         listFoodsRoute:(context) => const ListFoods()
       },
     ));
