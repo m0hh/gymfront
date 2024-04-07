@@ -4,6 +4,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:gymfront/util/genericDialog.dart';
 
 void showErrorsDialog(BuildContext context,Map<String, dynamic>  errors){
@@ -65,4 +66,15 @@ Future<bool> showDeleteDialog(BuildContext context){
       'No' : false,
       'Delete' : true
      }).then((value) => value ?? false);
+}
+
+
+Future<void> showErrorDialogBuild(BuildContext context, String error) async {
+  SchedulerBinding.instance.addPostFrameCallback((_) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(error),
+      ),
+    );
+  });
 }

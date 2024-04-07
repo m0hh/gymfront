@@ -113,13 +113,18 @@ class _ListFoodsState extends State<ListFoods> {
             case ConnectionState.done:
               String result = snapshot.data ??  "error";
               if (result == "error"){
-                showErrorDialog(context, result);
+                showErrorDialogBuild(context, "An Error has occured");
               }else if(result == "login"){
                 Navigator.pushNamedAndRemoveUntil(context, loginRoute, (route) => false);
               }
-              final data = jsonDecode(result) as Map<String, dynamic>;
+              late final Map<String, dynamic> data;
+              try {
+                data = jsonDecode(result) as Map<String, dynamic>;
+              } on Exception {
+                data = {};
+              }
               return ListView.builder(
-                itemCount: data["foods"].length,
+                itemCount: data["foods"]?.length ?? 0,
                 itemBuilder: (context, index) {
                   final foods = data["foods"][index];
                   return ListTile(

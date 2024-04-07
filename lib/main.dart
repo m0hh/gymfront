@@ -5,9 +5,11 @@ import 'package:gymfront/auth/service.dart';
 import 'package:gymfront/constants/routes.dart';
 import 'package:gymfront/util/menuBar.dart';
 import 'package:gymfront/views/add_update_food.dart';
+import 'package:gymfront/views/am_snack_view.dart';
 import 'package:gymfront/views/list_coach_users_view.dart';
 import 'package:gymfront/views/list_foods.dart';
 import 'package:gymfront/views/login_view.dart';
+import 'package:gymfront/views/meals_view.dart';
 import 'package:gymfront/views/register_view.dart';
 import 'dart:developer' show log;
 
@@ -21,14 +23,17 @@ void main() async{
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: isLoggedIn ? const HomePage() : const  LoginView(),
+      home: const MealsView(),
       routes: {
         loginRoute: (context) => const LoginView(),
         registerRoute: (context) => const RegisterView(),
         homeRoute: (context) => const HomePage(),
         coachUsersRoute:(context) => const ListCoachUsers(),
         addUpdateFoodRoute:(context) => const AddUpdateFood(),
-        listFoodsRoute:(context) => const ListFoods()
+        listFoodsRoute:(context) => const ListFoods(),
+        listAmSnacksRoute:(context) => const ListAmsnacks()
+
+
       },
     ));
 }
